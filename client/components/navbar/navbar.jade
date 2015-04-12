@@ -6,7 +6,7 @@ div.navbar.navbar-default.navbar-static-top(ng-controller='NavbarCtrl')
         span.icon-bar
         span.icon-bar
         span.icon-bar
-      a.navbar-brand(href='/') git-stars
+      a.navbar-brand(href='/') GitStars
 
     div#navbar-main.navbar-collapse.collapse(collapse='isCollapsed')
       ul.nav.navbar-nav
@@ -17,11 +17,8 @@ div.navbar.navbar-default.navbar-static-top(ng-controller='NavbarCtrl')
           a(href='/admin') Admin
 
       ul.nav.navbar-nav.navbar-right
-        li(ng-hide='isLoggedIn()', ng-class='{active: isActive("/signup")}')
-          a(href='/signup') Sign up
-
         li(ng-hide='isLoggedIn()', ng-class='{active: isActive("/login")}')
-          a(href='/login') Login
+          a(href='', ng-click='loginOauth("github")') Login
 
         li(ng-show='isLoggedIn()')
           p.navbar-text Hello {{ getCurrentUser().name }}

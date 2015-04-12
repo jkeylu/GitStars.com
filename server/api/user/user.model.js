@@ -3,21 +3,36 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var crypto = require('crypto');
-var authTypes = ['github', 'twitter', 'facebook', 'google'];
 
 var UserSchema = new Schema({
+  login: String,
+  id: Number,
+  avatar_url: String,
+  type: String,
+  site_admin: Boolean,
   name: String,
+  company: String,
+  blog: String,
+  location: String,
   email: { type: String, lowercase: true },
+  hireable: Boolean,
+  bio: String,
+  public_repos: Number,
+  public_gists: Number,
+  followers: Number,
+  following: Number,
+  created_at: Date,
+  updated_at: Date,
+  access_token: String,
+  gs_created_at: Date,
+  gs_logined_at: Date,
   role: {
     type: String,
     default: 'user'
   },
   hashedPassword: String,
-  provider: String,
   salt: String,
-  google: {},
-  github: {}
-});
+}, { id: false });
 
 /**
  * Virtuals
@@ -51,58 +66,6 @@ UserSchema
       '_id': this._id,
       'role': this.role
     };
-  });
-
-/**
- * Validations
- */
-
-// Validate empty email
-UserSchema
-  .path('email')
-  .validate(function(email) {
-    if (authTypes.indexOf(this.provider) !== -1) return true;
-    return email.length;
-  }, 'Email cannot be blank');
-
-// Validate empty password
-UserSchema
-  .path('hashedPassword')
-  .validate(function(hashedPassword) {
-    if (authTypes.indexOf(this.provider) !== -1) return true;
-    return hashedPassword.length;
-  }, 'Password cannot be blank');
-
-// Validate email is not taken
-UserSchema
-  .path('email')
-  .validate(function(value, respond) {
-    var self = this;
-    this.constructor.findOne({email: value}, function(err, user) {
-      if(err) throw err;
-      if(user) {
-        if(self.id === user.id) return respond(true);
-        return respond(false);
-      }
-      respond(true);
-    });
-}, 'The specified email address is already in use.');
-
-var validatePresenceOf = function(value) {
-  return value && value.length;
-};
-
-/**
- * Pre-save hook
- */
-UserSchema
-  .pre('save', function(next) {
-    if (!this.isNew) return next();
-
-    if (!validatePresenceOf(this.hashedPassword) && authTypes.indexOf(this.provider) === -1)
-      next(new Error('Invalid password'));
-    else
-      next();
   });
 
 /**

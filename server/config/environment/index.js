@@ -41,10 +41,10 @@ var all = {
     }
   },
 
-  google: {
-    clientID:     process.env.GOOGLE_ID || 'id',
-    clientSecret: process.env.GOOGLE_SECRET || 'secret',
-    callbackURL:  (process.env.DOMAIN || '') + '/auth/google/callback'
+  github: {
+    clientID:     process.env.GITHUB_ID || 'id',
+    clientSecret: process.env.GITHUB_SECRET || 'secret',
+    callbackURL:  (process.env.DOMAIN || 'localhost:9000') + '/login/github/callback'
   }
 };
 
