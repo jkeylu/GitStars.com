@@ -25,7 +25,7 @@ exports.index = function(req, res) {
 exports.show = function (req, res, next) {
   var userId = req.params.id;
 
-  User.findById(userId, function (err, user) {
+  User.findOne({ id: userId }, function (err, user) {
     if (err) return next(err);
     if (!user) return res.send(401);
     res.json(user.profile);
@@ -37,7 +37,9 @@ exports.show = function (req, res, next) {
  * restriction: 'admin'
  */
 exports.destroy = function(req, res) {
-  User.findByIdAndRemove(req.params.id, function(err, user) {
+  var userId = req.params.id;
+
+  User.findOneAndRemove({ id: userId }, function(err, user) {
     if(err) return res.send(500, err);
     return res.send(204);
   });
@@ -47,11 +49,11 @@ exports.destroy = function(req, res) {
  * Change a users password
  */
 exports.changePassword = function(req, res, next) {
-  var userId = req.user._id;
+  var userId = req.user.id;
   var oldPass = String(req.body.oldPassword);
   var newPass = String(req.body.newPassword);
 
-  User.findById(userId, function (err, user) {
+  User.findOne({ id: userId }, function (err, user) {
     if(user.authenticate(oldPass)) {
       user.password = newPass;
       user.save(function(err) {
@@ -68,10 +70,9 @@ exports.changePassword = function(req, res, next) {
  * Get my info
  */
 exports.me = function(req, res, next) {
-  var userId = req.user._id;
-  User.findOne({
-    _id: userId
-  }, '-salt -hashedPassword', function(err, user) { // don't ever give out the password or salt
+  var userId = req.user.id;
+
+  User.findOne({ id: userId }, '-salt -hashedPassword', function(err, user) {
     if (err) return next(err);
     if (!user) return res.json(401);
     res.json(user);
