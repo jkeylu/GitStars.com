@@ -11,26 +11,38 @@ exports.setup = function(User, config) {
     function(accessToken, refreshToken, profile, done) {
       User.findOne({
         'id': profile.id
+
       }, function(err, user) {
+        var keys = [ 'login', 'id', 'avatar_url', 'type', 'site_admin',
+          'name', 'company', 'blog', 'location', 'email', 'hireable',
+          'bio', 'public_repos', 'public_gists', 'followers', 'following',
+          'created_at', 'updated_at' ];
+        var obj = _.pick(profile._json, keys);
+        obj.created_at = new Date(obj.created_at);
+        obj.updated_at = new Date(obj.updated_at);
+        obj.access_token = accessToken;
+        obj.gs_logined_at = new Date();
+
         if (!user) {
-          var keys = [ 'login', 'id', 'avatar_url', 'type', 'site_admin',
-            'name', 'company', 'blog', 'location', 'email', 'hireable',
-            'bio', 'public_repos', 'public_gists', 'followers', 'following',
-            'created_at', 'updated_at' ];
-          var obj = _.pick(profile._json, keys);
-          obj.access_token = accessToken;
-          obj.created_at = new Date(obj.created_at);
-          obj.updated_at = new Date(obj.updated_at);
           obj.gs_created_at = new Date();
-          obj.gs_logined_at = new Date();
           user = new User(obj);
           user.save(function(err) {
-            if (err) done(err);
-            return done(err, user);
+            if (err) return done(err);
+            done(err, user);
           });
+
         } else {
-          return done(err, user);
+          if (!user.gs_created_at) obj.gs_created_at = new Date();
+
+          user.update(obj, function(err, numberAffected, raw) {
+            if (err) return done(err);
+            User.findOne({}, function(err, user) {
+              if (err) return done(err);
+              done(err, user);
+            });
+          });
         }
+
       });
     })
   );
