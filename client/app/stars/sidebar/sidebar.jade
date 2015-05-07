@@ -1,9 +1,29 @@
 .sidebar(ng-controller='StarsSidebarCtrl')
-  div.btn-group
-    label.btn.btn-primary(ng-model='showModel' btn-radio='"All"') All
-    label.btn.btn-primary(ng-model='showModel' btn-radio='"Tagged"') Tagged
-    label.btn.btn-primary(ng-model='showModel' btn-radio='"Untagged"') Untagged
-  div.btn-group
-    label.btn.btn-primary(ng-model='sortModel' btn-radio='"Created"') Created
-    label.btn.btn-primary(ng-model='sortModel' btn-radio='"Updated"') Updated
-    label.btn.btn-primary(ng-model='sortModel' btn-radio='"Pushed"') Pushed
+  .panel.panel-default
+    .panel-heading Show
+    .panel-body
+      div.btn-group
+        label.btn.btn-default(ng-model='filter.show' btn-radio='"All"') All
+        label.btn.btn-default(ng-model='filter.show' btn-radio='"Tagged"') Tagged
+        label.btn.btn-default(ng-model='filter.show' btn-radio='"Untagged"') Untagged
+  .panel.panel-default
+    .panel-heading Sort By
+    .panel-body
+      div.btn-group
+        label.btn.btn-default(ng-model='filter.sort' btn-radio='"Created"') Created
+        label.btn.btn-default(ng-model='filter.sort' btn-radio='"Updated"') Updated
+        label.btn.btn-default(ng-model='filter.sort' btn-radio='"Pushed"') Pushed
+  .panel.panel-default
+    .panel-heading Language
+    .panel-body
+      ui-select(multiple, ng-model='filter.languages')
+        ui-select-match(placeholder='Enter a language') {{$item}}
+        ui-select-choices(repeat='language in languages track by $index',
+          refresh='refreshLanguages($select.search)', refresh-delay='0')
+  .panel.panel-default
+    .panel-heading Tag
+    .panel-body
+      ui-select(multiple, ng-model='filter.tags')
+        ui-select-match(placeholder='Enter a tag') {{$item}}
+        ui-select-choices(repeat='tag in tags track by $index',
+          refresh='refreshTags($select.search)', refresh-delay='0')
