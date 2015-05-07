@@ -6,7 +6,7 @@ var crypto = require('crypto');
 
 var UserSchema = new Schema({
   login: String,
-  id: Number,
+  id: { type: Number, unique: true },
   avatar_url: String,
   type: String,
   site_admin: Boolean,

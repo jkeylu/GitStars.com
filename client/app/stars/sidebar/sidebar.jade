@@ -1,0 +1,9 @@
+.sidebar(ng-controller='StarsSidebarCtrl')
+  div.btn-group
+    label.btn.btn-primary(ng-model='showModel' btn-radio='"All"') All
+    label.btn.btn-primary(ng-model='showModel' btn-radio='"Tagged"') Tagged
+    label.btn.btn-primary(ng-model='showModel' btn-radio='"Untagged"') Untagged
+  div.btn-group
+    label.btn.btn-primary(ng-model='sortModel' btn-radio='"Created"') Created
+    label.btn.btn-primary(ng-model='sortModel' btn-radio='"Updated"') Updated
+    label.btn.btn-primary(ng-model='sortModel' btn-radio='"Pushed"') Pushed

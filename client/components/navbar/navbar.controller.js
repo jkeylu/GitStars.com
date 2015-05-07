@@ -3,8 +3,14 @@
 angular.module('gitStarsApp')
   .controller('NavbarCtrl', function ($scope, $location, $window, Auth) {
     $scope.menu = [{
-      'title': 'Home',
-      'link': '/'
+      title: 'Stars',
+      link: '/stars'
+    }, {
+      title: 'Trending',
+      link: '/trending'
+    }, {
+      title: 'Showcases',
+      link: '/showcases'
     }];
 
     $scope.isCollapsed = true;
