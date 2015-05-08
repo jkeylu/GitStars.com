@@ -1,7 +1,51 @@
-.repo
+.stars .repo
   position absolute
   top 50px
   bottom 0px
   left 200px
   width 400px
-  background #456
+  overflow-y auto
+
+  .list-group-item:first-child
+    border-top-left-radius 0px
+    border-top-right-radius 0px
+  .list-group-item:last-child
+    border-bottom-left-radius 0px
+    border-bottom-right-radius 0px
+
+  .list-group-item:focus,
+  .list-group-item:hover
+    color #555
+    text-decoration none
+    background-color #f5f5f5
+  .list-group-item.active,
+  .list-group-item.active:focus,
+  .lsit-group-item.active:hover
+    color #fff
+    background-color #337ab7
+    border-color #337ab7
+    a
+      color #fff
+
+  .list-group-item
+    cursor pointer
+    border-left-width 0px
+
+  .list-group-item-heading
+    margin-bottom 10px
+    word-break break-all
+
+  .stats
+    margin-top 10px
+    .stat
+      display inline-block
+      width 55px
+      padding 1px 0px
+      margin 0px 2px
+      .fa
+        margin-right 2px
+    .stars
+      margin-left 0px
+    .link
+      float right
+      width 110px

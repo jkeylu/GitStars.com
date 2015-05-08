@@ -1,2 +1,18 @@
-.repo
-  | b
+.repo(ng-controller='StarsRepoCtrl')
+  .list-group
+    .list-group-item(ng-repeat='repo in repos', ng-click='activeRepo(repo)', ng-class='activedRepo.id == repo.id ? "active" : ""')
+      h4.list-group-item-heading {{repo.full_name}}
+      p.list-group-item-text {{repo.description}}
+      .stats
+        .stat.stars
+          i.fa.fa-star
+          {{repo.stargazers_count}}
+        .stat.watches
+          i.fa.fa-eye
+          {{repo.watchers_count}}
+        .stat.forks
+          i.fa.fa-code-fork
+          {{repo.forks_count}}
+        .stat.link
+          i.fa.fa-link
+          a(ng-href='https://github.com/{{repo.full_name}}') View on github

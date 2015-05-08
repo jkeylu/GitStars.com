@@ -1,25 +1,35 @@
 .sidebar(ng-controller='StarsSidebarCtrl')
   .panel.panel-default
+    .panel-heading Filter by
+    .panel-body
+      .filter
+        input.form-control(type='text', placeholder='Enter something')
+  .panel.panel-default
     .panel-heading Show
     .panel-body
-      div.btn-group
+      .btn-group
         label.btn.btn-default(ng-model='filter.show' btn-radio='"All"') All
         label.btn.btn-default(ng-model='filter.show' btn-radio='"Tagged"') Tagged
         label.btn.btn-default(ng-model='filter.show' btn-radio='"Untagged"') Untagged
   .panel.panel-default
     .panel-heading Sort By
     .panel-body
-      div.btn-group
+      .btn-group
         label.btn.btn-default(ng-model='filter.sort' btn-radio='"Created"') Created
         label.btn.btn-default(ng-model='filter.sort' btn-radio='"Updated"') Updated
         label.btn.btn-default(ng-model='filter.sort' btn-radio='"Pushed"') Pushed
+      .btn-group
+        label.btn.btn-default(ng-model='filter.sort' btn-radio='"Stars"') Stars
+        label.btn.btn-default(ng-model='filter.sort' btn-radio='"Watchers"') Watchers
+        label.btn.btn-default(ng-model='filter.sort' btn-radio='"Forks"') Forks
   .panel.panel-default
     .panel-heading Language
     .panel-body
       ui-select(multiple, ng-model='filter.languages')
         ui-select-match(placeholder='Enter a language') {{$item}}
         ui-select-choices(repeat='language in languages track by $index',
-          refresh='refreshLanguages($select.search)', refresh-delay='0')
+          refresh='refreshLanguages($select.search)', refresh-delay='1')
+          {{language}}
   .panel.panel-default
     .panel-heading Tag
     .panel-body
