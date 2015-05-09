@@ -2,28 +2,40 @@
 
 var async = require('async')
   , _ = require('lodash')
-  , Star = require('./star.model');
-  , githubApi = require('../../components/github');
+  , Star = require('./star.model')
+  , User = require('../user/user.model')
+  , githubApi = require('../../components/github/api');
 
 var saveStarsQueue = async.queue(function(task, callback) {
+  var repos = [];
   async.eachLimit(task.stars, 50, function(star, cb) {
+    repos.push(star.id);
     var conditions = {
       user_id: task.user_id,
       id: star.id
     };
 
-    var update = _.pick(star, ['id', 'full_name', 'description',
+    var update = _.pick(star, ['id', 'full_name', 'description', 'homepage',
+      'created_at', 'updated_at', 'pushed_at',
       'stargazers_count', 'watchers_count', 'forks_count', 'language']);
     update.user_id = task.user_id;
 
     var options = { upsert: true };
 
     Star.findOneAndUpdate(conditions, update, options, cb);
-  }, callback);
+  }, function(err) {
+    if (err) {
+      return callback(err);
+    }
+    callback(null, repos);
+  });
 }, 1);
 
+var currentTasks = [];
 var fetchStarredQueue = async.queue(function(task, callback) {
+  currentTasks.push(task);
   githubApi.fetchStarred(task.page, task.access_token, function(err, stars, pageCount) {
+    _.pull(currentTasks, task);
     if (err) {
       return callback(err);
     }
@@ -36,10 +48,39 @@ function sync(user, callback) {
   var fetchingCount = 0
     , savingCount = 0;
 
-  var done = function(err) {
+  var errors = [];
+  var allStarredRepos = [];
+  var done = function(err, repos) {
+    if (err) {
+      errors.push(err);
+    } else {
+      allStarredRepos = allStarredRepos.concat(repos);
+    }
     savingCount--;
     if (fetchingCount == 0 && savingCount == 0) {
-      callback(err);
+      if (errors.length > 0) {
+        // TODO: Log all errors
+        return callback(errors[0]);
+      }
+
+      var conditions = {
+        user_id: user.id,
+        id: {
+          $nin: allStarredRepos
+        }
+      };
+      Star.remove(conditions, function(err) {
+        if (err) {
+          return callback(err);
+        }
+        User.findOneAndUpdate(
+          { id: user.id },
+          { gs_synced_at: new Date() },
+          function(err) {
+            callback(err);
+          }
+        );
+      })
     }
   };
 
@@ -67,7 +108,7 @@ function sync(user, callback) {
 
     for (var i = 2; i <= pageCount; i++) {
       task = {
-        userId: user.id,
+        user_id: user.id,
         page: i,
         access_token: user.access_token,
         cb: done
@@ -83,9 +124,10 @@ function sync(user, callback) {
 }
 
 function isSyncing(user) {
-  return -1 < _.findIndex(fetchStarredQueue.tasks, function(task) {
-    return task.data.id == user.id;
-  });
+  return _.findIndex(currentTasks,
+      function(t) { return t.user_id == user.id; }) > -1
+    || _.findIndex(fetchStarredQueue.tasks,
+      function(t) { return t.data.user_id == user.id; }) > -1;
 }
 
 exports.sync = sync;

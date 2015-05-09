@@ -8,6 +8,7 @@ var auth = require('../../auth/auth.service');
 var router = express.Router();
 
 router.get('/', auth.isAuthenticated(), controller.index);
+router.put('/', auth.isAuthenticated(), controller.sync);
 router.post('/', auth.isAuthenticated(), controller.create);
 router.delete('/:id', auth.isAuthenticated(), controller.destroy);
 router.put('/:id/tag', auth.isAuthenticated(), controller.updateTags);

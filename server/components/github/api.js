@@ -29,12 +29,19 @@ exports.fetchStarred = function(page, accessToken, callback) {
 
     if (resp.statusCode == 200) {
       var pageCount = 1;
-      var link = resp.headers['Link'];
+      var link = resp.headers['link'];
       if (link) {
-        var m = link.match(/<.*?page=(\d+)>\s*;\s*rel="last"/);
-        if (m.length > 1 && (~~m[1] > 0)) {
-          pageCount = ~~m[1];
+        var count = getPageCount(link, 'last');
+        if (count == -1) {
+          count = getPageCount(link, 'prev');
+          if (count > 0) {
+            count = count + 1;
+          } else {
+            err = new HttpError(500, 'Can not parse link [' + link + ']');
+            return callback(err);
+          }
         }
+        pageCount = count;
       }
       return callback(null, body, pageCount);
     } else {
@@ -43,6 +50,15 @@ exports.fetchStarred = function(page, accessToken, callback) {
     }
   });
 };
+
+function getPageCount(link, rel) {
+  var patten = new RegExp('<.*?[?&]page=(\\d+)(&per_page=\\d+)?>\\s*;\\s*rel="' + rel + '"');
+  var m = link.match(patten);
+  if (m) {
+    return ~~m[1];
+  }
+  return -1;
+}
 
 exports.star = function(owner, repo, accessToken, callback) {
   var url = util.format('https://api.github.com/user/starred/%s/%s', owner, repo);

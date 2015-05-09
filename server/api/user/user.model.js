@@ -24,8 +24,9 @@ var UserSchema = new Schema({
   created_at: Date,
   updated_at: Date,
   access_token: String,
-  gs_created_at: Date,
+  gs_created_at: { type: Date, default: Date.now },
   gs_logined_at: Date,
+  gs_synced_at: Date,
   role: {
     type: String,
     default: 'user'
