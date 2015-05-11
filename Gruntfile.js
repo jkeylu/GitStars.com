@@ -14,7 +14,6 @@ module.exports = function (grunt) {
     express: 'grunt-express-server',
     useminPrepare: 'grunt-usemin',
     ngtemplates: 'grunt-angular-templates',
-    cdnify: 'grunt-google-cdn',
     protractor: 'grunt-protractor-runner',
     injector: 'grunt-asset-injector',
     buildcontrol: 'grunt-build-control'
@@ -340,13 +339,6 @@ module.exports = function (grunt) {
       }
     },
 
-    // Replace Google CDN references
-    cdnify: {
-      dist: {
-        html: ['<%= yeoman.dist %>/public/*.html']
-      }
-    },
-
     // Copies remaining files to places other tasks can use
     copy: {
       dist: {
@@ -373,6 +365,7 @@ module.exports = function (grunt) {
           dest: '<%= yeoman.dist %>',
           src: [
             'package.json',
+            'processes.json',
             'server/**/*'
           ]
         }]
@@ -571,6 +564,25 @@ module.exports = function (grunt) {
         }
       }
     },
+
+    // SSH Deployment
+    environments: {
+      options: {
+        local_path: 'dist',
+        current_symlink: 'current'
+      },
+      production: {
+        options: {
+          host: 'gitstars.com',
+          username: 'pm2',
+          privateKey: grunt.file.read('/Users/luhuan/Documents/ssh_keys/gitstars'),
+          port: '46800',
+          deploy_path: '/home/pm2/GitStars.com',
+          after_deploy: 'cd /home/pm2/GitStars.com/current && npm install --production && pm2 startOrRestart processes.json --env production',
+          releases_to_keep: 2
+        }
+      }
+    }
   });
 
   // Used for delaying livereload until after server has restarted
@@ -681,7 +693,6 @@ module.exports = function (grunt) {
     'concat',
     'ngAnnotate',
     'copy:dist',
-    'cdnify',
     'cssmin',
     'uglify',
     'rev',
@@ -692,5 +703,10 @@ module.exports = function (grunt) {
     'newer:jshint',
     'test',
     'build'
+  ]);
+
+  grunt.registerTask('deploy', [
+    'build',
+    'ssh_deploy:production'
   ]);
 };
