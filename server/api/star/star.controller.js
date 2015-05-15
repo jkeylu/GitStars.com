@@ -15,7 +15,16 @@ exports.index = function(req, res) {
   var conditions = {
     user_id: req.user.id
   };
-  Star.find(conditions, function(err, stars) {
+  var options = {
+    skip: 0,
+    limit: 100
+  };
+  var page = ~~req.query.page;
+  if (page < 1) {
+    page = 1;
+  }
+  options.skip = (page - 1) * 100;
+  Star.find(conditions, null, options, function(err, stars) {
     if(err) {
       return res.status(500).send(err);
     }
@@ -35,7 +44,6 @@ exports.destroy = function(req, res) {
 
 exports.sync = function(req, res) {
   User.findOne({ id: req.user.id }, 'gs_synced_at', function(err, user) {
-    console.log(user);
     if (!err && user && user.gs_synced_at) {
       var gone = Math.floor((new Date() - user.gs_synced_at) / 1000);
       console.log(gone);

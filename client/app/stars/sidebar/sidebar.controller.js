@@ -1,14 +1,13 @@
 angular.module('gitStarsApp')
   .controller('StarsSidebarCtrl', function ($scope, $http, $location, $window) {
-    $scope.filter = {};
-    $scope.filter.show = 'All';
-    $scope.filter.sort = 'Created';
-    $scope.filter.languages = [];
-    $scope.filter.tags = [];
-
     $scope.languages = [];
     $scope.refreshLanguages = function(text) {
-      $scope.languages = ['ActionScript'];
+      $scope.languages = [];
+      for (var i = 0, l = $scope.availableLanguages.length; i < l; i++) {
+        if ($scope.availableLanguages[i].indexOf(text) > 0) {
+          $scope.languages.push($scope.availableLanguages[i]);
+        }
+      }
     };
     $scope.availableLanguages = [
       'ActionScript',

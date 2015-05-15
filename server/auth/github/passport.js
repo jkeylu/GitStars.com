@@ -9,10 +9,7 @@ exports.setup = function(User, config) {
       callbackURL: config.github.callbackURL
     },
     function(accessToken, refreshToken, profile, done) {
-      User.findOne({
-        'id': profile.id
-
-      }, function(err, user) {
+      User.findOne({ id: profile.id }, function(err, user) {
         var keys = [ 'login', 'id', 'avatar_url', 'type', 'site_admin',
           'name', 'company', 'blog', 'location', 'email', 'hireable',
           'bio', 'public_repos', 'public_gists', 'followers', 'following',
@@ -24,7 +21,6 @@ exports.setup = function(User, config) {
         obj.gs_logined_at = new Date();
 
         if (!user) {
-          obj.gs_created_at = new Date();
           user = new User(obj);
           user.save(function(err) {
             if (err) return done(err);
@@ -34,9 +30,9 @@ exports.setup = function(User, config) {
         } else {
           if (!user.gs_created_at) obj.gs_created_at = new Date();
 
-          user.update(obj, function(err, numberAffected, raw) {
+          user.update(obj, function(err, raw) {
             if (err) return done(err);
-            User.findOne({}, function(err, user) {
+            User.findOne({ id: profile.id }, function(err, user) {
               if (err) return done(err);
               done(err, user);
             });

@@ -16,7 +16,8 @@ var StarSchema = new Schema({
   watchers_count: Number,
   forks_count: Number,
   language: String,
-  tags: [String]
+  tags: [String],
+  gs_unstarred_at: Date
 });
 
 StarSchema.index({ user_id: 1, id: 1 }, { unique: true });

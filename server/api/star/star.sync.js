@@ -19,8 +19,9 @@ var saveStarsQueue = async.queue(function(task, callback) {
       'created_at', 'updated_at', 'pushed_at',
       'stargazers_count', 'watchers_count', 'forks_count', 'language']);
     update.user_id = task.user_id;
+    update.gs_unstarred_at = undefined;
 
-    var options = { upsert: true };
+    var options = { new: true, upsert: true };
 
     Star.findOneAndUpdate(conditions, update, options, cb);
   }, function(err) {
@@ -69,13 +70,14 @@ function sync(user, callback) {
           $nin: allStarredRepos
         }
       };
-      Star.remove(conditions, function(err) {
+      var now = new Date();
+      Star.update(conditions, { gs_unstarred_at: now }, function(err) {
         if (err) {
           return callback(err);
         }
         User.findOneAndUpdate(
           { id: user.id },
-          { gs_synced_at: new Date() },
+          { gs_synced_at: now },
           function(err) {
             callback(err);
           }
