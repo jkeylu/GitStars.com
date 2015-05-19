@@ -46,7 +46,6 @@ exports.sync = function(req, res) {
   User.findOne({ id: req.user.id }, 'gs_synced_at', function(err, user) {
     if (!err && user && user.gs_synced_at) {
       var gone = Math.floor((new Date() - user.gs_synced_at) / 1000);
-      console.log(gone);
       if (gone < 300) {
         return res.status(304).send({ waitting: (300 - gone) });
       }
@@ -69,7 +68,7 @@ exports.sync = function(req, res) {
 exports.updateTags = function(req, res) {
   var userId = req.user.id
     , repoId = req.params.id
-    , tags = req.body;
+    , tags = _.compact(_.uniq(req.body));
 
   Star.findOne({ user_id: userId, id: repoId }, function(err, star) {
     if (err) {
@@ -92,7 +91,7 @@ exports.updateTags = function(req, res) {
       async.parallel([
         function(callback) {
           if (newTags.lenght == 0) {
-            callback();
+            return callback();
           }
           async.each(newTags, function(tagName, cb) {
             Tag.increaseCount({ user_id: userId, name: tagName }, cb);
@@ -100,9 +99,9 @@ exports.updateTags = function(req, res) {
         },
         function(callback) {
           if (needlessTags.length == 0) {
-            callback();
+            return callback();
           }
-          async.each(needlessTags, function(tag, cb) {
+          async.each(needlessTags, function(tagName, cb) {
             Tag.decreaseCount({ user_id: userId, name: tagName }, cb);
           }, callback);
         }
@@ -132,6 +131,7 @@ exports.removeTag = function(req, res) {
     }
 
     _.pull(star.tags, tagName);
+    star.markModified('tags');
     star.save(function(err) {
       if (err) {
         return res.status(500).send(err);

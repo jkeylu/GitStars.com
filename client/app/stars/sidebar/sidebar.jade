@@ -21,9 +21,7 @@
   .panel.panel-default
     .panel-heading Order By
       span.order
-        | (
-        a(href='', ng-click='filters.sortReverse = !filters.sortReverse', ng-bind='filters.sortReverse ? "desc" : "asc"')
-        | )
+        a(href='', ng-click='filters.sortReverse = !filters.sortReverse', ng-bind='filters.sortReverse ? "DESC" : "ASC"')
     .panel-body
       .btn-group
         label.btn.btn-default(ng-model='filters.sortField', btn-radio='"created_at"') Created
@@ -42,8 +40,10 @@
           div(ng-bind-html='language | highlight:$select.search')
   .panel.panel-default
     .panel-heading Tag
+      span.logic
+        a(href='', ng-click='filters.tagsFilterLogic = filters.tagsFilterLogic == "AND" ? "OR" : "AND"', ng-bind='filters.tagsFilterLogic')
     .panel-body
       ui-select(multiple, ng-model='filters.tags')
-        ui-select-match(placeholder='Enter a tag') {{$item}}
-        ui-select-choices(repeat='tag in tags track by $index',
-          refresh='refreshTags($select.search)', refresh-delay='0')
+        ui-select-match(placeholder='Enter a tag') {{$item.name}}
+        ui-select-choices(repeat='tag.name as tag in tags | filter:$select.search track by $index')
+          div(ng-bind-html='tag.name | highlight:$select.search')

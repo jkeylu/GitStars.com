@@ -22,18 +22,4 @@ var StarSchema = new Schema({
 
 StarSchema.index({ user_id: 1, id: 1 }, { unique: true });
 
-StarSchema.methods.setTags = function(tags, callback) {
-  var user_id = this.user_id
-    , repo_id = this.id;
-  var conditions = {
-    user_id: user_id,
-    id: repo_id
-  };
-  this.model('Star').findOne(conditions, function(err, star) {
-    if (err) {
-      return callback(err);
-    }
-  });
-};
-
 module.exports = mongoose.model('Star', StarSchema);

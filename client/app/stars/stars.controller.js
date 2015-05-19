@@ -1,9 +1,9 @@
 angular.module('gitStarsApp')
   .controller('StarsCtrl',
-    ['$scope', '$q', 'Star', 'socket',
-    function ($scope, $q, Star, socket) {
+    ['$scope', 'Tag', 'Star', 'socket',
+    function ($scope, Tag, Star, socket) {
+      // fetch all repos
       $scope.repos = [];
-
       function fetch(page) {
         Star.query({ page: page }, function(repos) {
           if (repos.length > 0) {
@@ -25,6 +25,11 @@ angular.module('gitStarsApp')
         socket.unsyncUpdates('star');
       });
 
+      // fetch all tags
+      $scope.tags = Tag.query();
+
+
+      // sidebar filter
       var filters = {
         search: '',
         taggedState: 'All',
@@ -32,7 +37,8 @@ angular.module('gitStarsApp')
         sortField: 'created_at',
         languages: [],
         tags: [],
-        sortReverse: false
+        sortReverse: false,
+        tagsFilterLogic: 'AND'
       };
       $scope.filters = filters;
 
@@ -72,6 +78,24 @@ angular.module('gitStarsApp')
         return filters.languages.length == 0
           || filters.languages.indexOf(repo.language) >= 0;
       };
+      $scope.filterByTags = function(repo) {
+        if (filters.tags.length == 0) {
+          return true;
+        }
+        if (filters.tagsFilterLogic == 'AND') {
+          return _.difference(filters.tags, repo.tags).length == 0;
+        } else {
+          return _.intersection(filters.tags, repo.tags).length > 0;
+        }
+      };
 
+
+      $scope.activedRepo = null;
+      $scope.activeRepo = function(repo) {
+        $scope.activedRepo = repo;
+        $scope.activedRepo.objTags = _.map(repo.tags, function(tag) {
+          return { name: tag };
+        });
+      };
     }]
   );
