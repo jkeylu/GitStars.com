@@ -1,7 +1,7 @@
 angular.module('gitStarsApp')
   .controller('StarsCtrl',
-    ['$scope', 'Tag', 'Star', 'socket', '$http',
-    function ($scope, Tag, Star, socket, $http) {
+    ['$scope', 'Tag', 'Star', 'socket', '$http', '$timeout',
+    function ($scope, Tag, Star, socket, $http, $timeout) {
       // fetch all repos
       $scope.repos = [];
       function fetch(page) {
@@ -18,8 +18,27 @@ angular.module('gitStarsApp')
       }
       fetch(1);
 
-      Star.sync();
+      // pull stars button
+      $scope.pullState = 'Pull Stars';
+      $scope.pullStars = function() {
+        var t1 = new Date();
+        $scope.pullState = 'Pulling';
+        var done = function() {
+          var t2 = new Date();
+          var delay = 1500 - (t2 - t1);
+          if (delay < 0) {
+            delay = 0;
+          }
+          $timeout(function() {
+            $scope.pullState = 'Pull Stars';
+          }, delay);
+        };
+        Star.sync(done, done);
+      };
+      $scope.pullStars();
 
+
+      // socket
       socket.syncUpdates('star', $scope.repos);
       $scope.$on('$destroy', function () {
         socket.unsyncUpdates('star');

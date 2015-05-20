@@ -3,7 +3,7 @@
     .panel-heading Filter by
       span.refresh
         i.fa.fa-refresh
-        a(href='', ng-click='') Pull Stars
+        a(href='', ng-click='pullStars()', ng-class='{disabled: pullState == "Pulling"}', ng-bind='pullState')
     .panel-body
       .filter
         input.form-control(ng-model='filters.search', type='text', placeholder='Enter something')
