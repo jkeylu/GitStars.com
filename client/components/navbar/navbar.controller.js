@@ -5,13 +5,13 @@ angular.module('gitStarsApp')
     $scope.menu = [{
       title: 'Stars',
       link: '/stars'
-    }, {
+    }/*, {
       title: 'Trending',
       link: '/trending'
     }, {
       title: 'Showcases',
       link: '/showcases'
-    }];
+    }*/];
 
     $scope.isCollapsed = true;
     $scope.isLoggedIn = Auth.isLoggedIn;

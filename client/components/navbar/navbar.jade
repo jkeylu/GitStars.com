@@ -3,9 +3,9 @@ div.navbar.navbar-default.navbar-static-top(ng-controller='NavbarCtrl')
       a.navbar-brand(href='/') GitStars
 
     div#navbar-main
-      form.navbar-form.navbar-left(role='search')
-        div.form-group
-          input.form-control(type='text', placeholder='Search')
+      //form.navbar-form.navbar-left(role='search')
+      //  div.form-group
+      //    input.form-control(type='text', placeholder='Search')
       ul.nav.navbar-nav
         li(ng-repeat='item in menu', ng-class='{active: isActive(item.link)}')
           a(ng-href='{{item.link}}') {{item.title}}
@@ -19,10 +19,6 @@ div.navbar.navbar-default.navbar-static-top(ng-controller='NavbarCtrl')
 
         li(ng-show='isLoggedIn()')
           p.navbar-text Hello {{ getCurrentUser().name }}
-
-        li(ng-show='isLoggedIn()', ng-class='{active: isActive("/settings")}')
-          a(href='/settings')
-            span.glyphicon.glyphicon-cog
 
         li(ng-show='isLoggedIn()', ng-class='{active: isActive("/logout")}')
           a(href='', ng-click='logout()') Logout
