@@ -44,7 +44,7 @@ var all = {
   github: {
     clientID:     process.env.GITHUB_ID || 'id',
     clientSecret: process.env.GITHUB_SECRET || 'secret',
-    callbackURL:  (process.env.DOMAIN || 'localhost:9000') + '/login/github/callback'
+    callbackURL:  '/login/github/callback'
   }
 };
 
