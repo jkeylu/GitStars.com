@@ -45,5 +45,5 @@
     .panel-body
       ui-select(multiple, ng-model='filters.tags')
         ui-select-match(placeholder='Enter a tag') {{$item.name}}
-        ui-select-choices(repeat='tag.name as tag in tags | filter:$select.search track by $index')
+        ui-select-choices(repeat='tag.name as tag in tags | filter:$select.search')
           div(ng-bind-html='tag.name | highlight:$select.search')

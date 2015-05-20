@@ -100,3 +100,24 @@ exports.unstart = function(owner, repo, accessToken, callback) {
     }
   });
 };
+
+exports.fetchReadme = function(fullName, accessToken, callback) {
+  var url = util.format('https://api.github.com/repos/%s/readme', fullName);
+  var options = {
+    parse_response: false,
+    headers: { 'Authorization': 'Bearer ' + accessToken },
+    accept: 'application/vnd.github.v3.html'
+  };
+  needle.get(url, options, function(err, resp, body) {
+    if (err) {
+      return callback(err);
+    }
+
+    if (resp.statusCode == 200) {
+      return callback(null, body);
+    } else {
+      err = new HttpError(resp.statusCode, body && body.message || body);
+      return callback(err);
+    }
+  });
+};

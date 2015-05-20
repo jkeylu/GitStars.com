@@ -1,6 +1,8 @@
 .detail(ng-controller='StarsDetailCtrl')
-  .panel.manage(ng-show='!!activedRepo')
-    .panel-body
+  .nothing(ng-hide='!!activedRepo')
+    | No Repo Selected
+  .panel.panel-default(ng-if='!!activedRepo')
+    .panel-heading.manage(ng-if='!!activedRepo')
       button.btn.btn-default(type='button', ng-click='')
         span(ng-show='!!activedRepo.gs_unstarred_at')
           i.fa.fa-star-o
@@ -10,7 +12,7 @@
           | Unstar
       .clone
         | Clone:
-        input.form-control(type='text', ng-model='"https://github.com/" + activedRepo.full_name + ".git"')
+        input.form-control(type='text', ng-value='"https://github.com/" + activedRepo.full_name + ".git"', readonly)
       .tags
         ui-select(multiple, ng-model='activedRepo.objTags',
           tagging='tagTransform', tagging-tokens=',|SPACE|ENTER',
@@ -18,6 +20,4 @@
         )
           ui-select-match(placeholder='Add a tag') {{$item.name}}
           ui-select-choices(repeat='tag in tags | filter:$select.search') {{tag.name}}
-  .panel.nothing(ng-hide='!!activedRepo')
-    | No Repo Selected
-  .panel.readme(ng-show='!!activedRepo')
+    .panel-body.readme(ng-if='!!activedRepo', ng-bind-html='activedRepo.readme')

@@ -4,7 +4,7 @@
       h4.list-group-item-heading {{repo.full_name}}
       p.list-group-item-text {{repo.description}}
       ul.tags
-        li.tag(ng-repeat='tag in repo.tags') {{tag}}
+        li.tag(ng-repeat='tag in repo.tags', ng-click='filterTag(tag); $event.stopPropagation()') {{tag}}
       .stats
         .stat.stars
           i.fa.fa-star
@@ -17,4 +17,4 @@
           {{repo.forks_count}}
         .stat.link
           i.fa.fa-link
-          a(ng-href='https://github.com/{{repo.full_name}}') View on github
+          a(ng-href='https://github.com/{{repo.full_name}}', target='_blank') View on github

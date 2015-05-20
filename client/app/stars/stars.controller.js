@@ -1,7 +1,7 @@
 angular.module('gitStarsApp')
   .controller('StarsCtrl',
-    ['$scope', 'Tag', 'Star', 'socket',
-    function ($scope, Tag, Star, socket) {
+    ['$scope', 'Tag', 'Star', 'socket', '$http',
+    function ($scope, Tag, Star, socket, $http) {
       // fetch all repos
       $scope.repos = [];
       function fetch(page) {
@@ -96,6 +96,11 @@ angular.module('gitStarsApp')
         $scope.activedRepo.objTags = _.map(repo.tags, function(tag) {
           return { name: tag };
         });
+        if (!repo.readme) {
+          $http.get('/api/repos/' + repo.full_name + '/readme').success(function(data) {
+            repo.readme = data;
+          });
+        }
       };
     }]
   );
