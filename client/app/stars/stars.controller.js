@@ -1,7 +1,13 @@
 angular.module('gitStarsApp')
   .controller('StarsCtrl',
-    ['$scope', 'Tag', 'Star', 'socket', '$http', '$timeout',
-    function ($scope, Tag, Star, socket, $http, $timeout) {
+    ['$scope', 'Tag', 'Star', 'socket', '$http', '$timeout', '$location', 'Auth',
+    function ($scope, Tag, Star, socket, $http, $timeout, $location, Auth) {
+      Auth.isLoggedInAsync(function(loggedIn) {
+        if (!loggedIn) {
+          $location.path('/login');
+        }
+      });
+
       // fetch all repos
       $scope.repos = [];
       function fetch(page) {
