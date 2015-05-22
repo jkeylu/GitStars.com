@@ -7,6 +7,7 @@ var Tag = require('../tag/tag.model');
 var User = require('../user/user.model')
 var config = require('../../config/environment');
 var starSync = require('./star.sync');
+var githubApi = require('../../components/github/api');
 
 /**
  * Get list of stars
@@ -33,12 +34,54 @@ exports.index = function(req, res) {
 };
 
 exports.create = function(req, res) {
+  var fullName = req.body.full_name;
+  async.parallel([
+    function(callback) {
+      githubApi.star(fullName, req.user.access_token, callback);
+    },
+    function(callback) {
+      githubApi.getRepo(fullName, req.user.access_token, callback);
+    }
+  ],
+  function(err, results) {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    var repo = results[1];
+    var conditions = {
+      user_id: req.user.id,
+      full_name: fullName
+    };
+    var options = {
+      upsert: true
+    };
+    Star.findOneAndUpdate(conditions, repo, options, function(err) {
+      if (err) {
+        return res.status(500).send(err);
+      }
+      res.sendStatus(204);
+    });
+  });
 };
 
 exports.destroy = function(req, res) {
   var userId = req.user.id
-    , repoId = req.params.id;
-  Star.findOneAndRemove({ user_id: userId, id: repoId }, function(err) {
+    , fullName = req.params.owner + '/' + req.params.repo;
+  Star.findOne({ user_id: userId, full_name: fullName }, function(err, repo) {
+    if (err) {
+      return res.status(500).send(err);
+    }
+    githubApi.unstar(fullName, req.user.access_token, function(err) {
+      if (err) {
+        return res.status(500).send(err);
+      }
+      repo.remove(function(err) {
+        if (err) {
+          return res.status(500).send(err);
+        }
+        res.sendStatus(204);
+      });
+    });
   });
 };
 

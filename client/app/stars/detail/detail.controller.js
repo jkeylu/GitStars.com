@@ -2,6 +2,35 @@ angular.module('gitStarsApp')
   .controller('StarsDetailCtrl',
     ['$scope', 'Star',
     function ($scope, Star) {
+      $scope.starringOrUnstarring = false;
+      $scope.starOrUnstar = function() {
+        var activedRepo = $scope.activedRepo;
+        if (!activedRepo) {
+          return;
+        }
+
+        $scope.starringOrUnstarring = true;
+        if (!activedRepo.gs_unstarred_at) {
+          var arr = activedRepo.full_name.split('/');
+          var params = {
+            owner: arr[0],
+            repo: arr[1]
+          };
+          Star.unstar(null, params, function() {
+            $scope.activedRepo = null;
+            $scope.starringOrUnstarring = false;
+          }, function() {
+            $scope.starringOrUnstarring = false;
+          });
+        } else {
+          Star.star({ full_name: activedRepo.full_name }, function() {
+            activedRepo.gs_unstarred_at = null;
+            $scope.starringOrUnstarring = false;
+          }, function() {
+            $scope.starringOrUnstarring = false;
+          });
+        }
+      };
       $scope.tagTransform = function(tag) {
         return {
           name: tag

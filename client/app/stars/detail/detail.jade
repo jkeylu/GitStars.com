@@ -3,7 +3,7 @@
     | No Repo Selected
   .panel.panel-default(ng-if='!!activedRepo')
     .panel-heading.manage(ng-if='!!activedRepo')
-      button.btn.btn-default(type='button', ng-click='')
+      button.btn.btn-default(type='button', ng-click='starOrUnstar()', ng-disabled='starringOrUnstarring')
         span(ng-show='!!activedRepo.gs_unstarred_at')
           i.fa.fa-star-o
           | Star

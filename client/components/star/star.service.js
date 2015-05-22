@@ -6,9 +6,12 @@ angular.module('gitStarsApp')
       sync: {
         method: 'PUT'
       },
-      delete: {
+      star: {
+        method: 'POST'
+      },
+      unstar: {
         method: 'DELETE',
-        params: { id: '@id' }
+        params: { id: '@owner', controller: '@repo' }
       },
       updateTags: {
         method: 'PUT',
