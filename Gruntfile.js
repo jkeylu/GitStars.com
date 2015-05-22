@@ -366,7 +366,7 @@ module.exports = function (grunt) {
           src: [
             'package.json',
             'ecosystem.json5',
-            'deploymodify.sh',
+            'post-deploy.sh',
             'server/**/*'
           ]
         }]
@@ -567,14 +567,11 @@ module.exports = function (grunt) {
       setup: {
         command: '<%= shell.deploy.command %> setup'
       },
-      modifyEcosystemFile: {
-        command: '<%= shell.deploy.command %> run chmod u+x deploymodify.sh && ./deploymodify.sh <%= env.all.deploy.GITHUB_ID %> <%= env.all.deploy.GITHUB_SECRET %>'
+      chmodPostDeployFile: {
+        command: '<%= shell.deploy.command %> run chmod u+x post-deploy.sh'
       },
-      installPackages: {
-        command: '<%= shell.deploy.command %> run npm install'
-      },
-      'startOrRestart': {
-        command: '<%= shell.deploy.command %> run  pm2 startOrRestart ecosystem.json5 --env production'
+      'post-deploy': {
+        command: '<%= shell.deploy.command %> run ./post-deploy.sh <%= env.all.deploy.GITHUB_ID %> <%= env.all.deploy.GITHUB_SECRET %>'
       }
     }
   });
@@ -704,9 +701,8 @@ module.exports = function (grunt) {
       'build',
       'buildcontrol:origin',
       'shell:deploy',
-      'shell:modifyEcosystemFile',
-      'shell:installPackages',
-      'shell:startOrRestart'
+      'shell:chmodPostDeployFile',
+      'shell:post-deploy'
     ]);
   });
 };
