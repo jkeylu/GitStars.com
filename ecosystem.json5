@@ -1,0 +1,43 @@
+{
+  /**
+   * Here we declare the apps that must be managed by PM2
+   * All options are listed here:
+   * https://github.com/Unitech/PM2/blob/master/ADVANCED_README.md#json-app-declaration
+   *
+   */
+  apps : [
+
+    // First application
+    {
+      name      : "GitStars.com",
+      script    : "server/app.js",
+      log_date_format: "YY-MM-DD HH:mm:ss Z",
+      env: {
+      },
+      env_production : {
+        NODE_ENV: "production",
+        IP: "127.0.0.1",
+        DOMAIN: "gitstars.com",
+        GITHUB_ID: "",
+        GITHUB_SECRET: ""
+      }
+    }
+  ],
+
+
+  /**
+   * PM2 help you to deploy apps over your servers
+   * For more help go to :
+   * https://github.com/Unitech/PM2/blob/master/ADVANCED_README.md#deployment-pm2--090
+   */
+  deploy : {
+    production : {
+      user : "pm2",
+      host : "gitstars.com",
+      port : "46800",
+      ref  : "origin/dist",
+      repo : "git@github.com:jkeylu/GitStars.com.git",
+      path : "/home/pm2/GitStars.com"
+    }
+  }
+}
