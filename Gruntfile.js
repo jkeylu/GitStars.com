@@ -365,7 +365,7 @@ module.exports = function (grunt) {
           dest: '<%= yeoman.dist %>',
           src: [
             'package.json',
-            'processes.json',
+            'ecosystem.json5',
             'server/**/*'
           ]
         }]
@@ -386,16 +386,10 @@ module.exports = function (grunt) {
         connectCommits: false,
         message: 'Built %sourceName% from commit %sourceCommit% on branch %sourceBranch%'
       },
-      heroku: {
+      origin: {
         options: {
-          remote: 'heroku',
-          branch: 'master'
-        }
-      },
-      openshift: {
-        options: {
-          remote: 'openshift',
-          branch: 'master'
+          remote: 'git@github.com:jkeylu/GitStars.com.git',
+          branch: 'dist'
         }
       }
     },
@@ -565,22 +559,21 @@ module.exports = function (grunt) {
       }
     },
 
-    // SSH Deployment
-    environments: {
-      options: {
-        local_path: 'dist',
-        current_symlink: 'current'
+    shell: {
+      deploy: {
+        command: 'pm2 deploy ecosystem.json5 production'
       },
-      production: {
-        options: {
-          host: 'gitstars.com',
-          username: 'pm2',
-          privateKey: grunt.file.read('/Users/luhuan/Documents/ssh_keys/gitstars'),
-          port: '46800',
-          deploy_path: '/home/pm2/GitStars.com',
-          after_deploy: 'cd /home/pm2/GitStars.com/current && npm install --production && pm2 startOrRestart processes.json --env production',
-          releases_to_keep: 2
-        }
+      setup: {
+        command: '<%= shell.deploy.command %> setup'
+      },
+      modifyEcosystemFile: {
+        command: '<%= shell.deploy.command %> run sed -i "s/\\(GITHUB_ID\\): \\".*\\"/\\1: \\"<%= env.all.deploy.GITHUB_ID %>\\"/; s/\\(GITHUB_SECRET\\): \\".*\\"/\\1: \\"<%= env.all.deploy.GITHUB_SECRET %>\\"/" ecosystem.json5'
+      },
+      installPackages: {
+        command: '<%= shell.deploy.command %> run npm install'
+      },
+      'startOrRestart': {
+        command: '<%= shell.deploy.command %> run  pm2 startOrRestart ecosystem.json5 --env production'
       }
     }
   });
@@ -705,8 +698,14 @@ module.exports = function (grunt) {
     'build'
   ]);
 
-  grunt.registerTask('deploy', [
-    'build',
-    'ssh_deploy:production'
-  ]);
+  grunt.registerTask('deploy', function() {
+    grunt.task.run([
+      'build',
+      'buildcontrol:origin',
+      'shell:deploy',
+      'shell:modifyEcosystemFile',
+      'shell:installPackages',
+      'shell:startOrRestart'
+    ]);
+  });
 };

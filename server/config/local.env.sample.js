@@ -9,9 +9,15 @@ module.exports = {
   DOMAIN:           'http://localhost:9000',
   SESSION_SECRET:   'gitstars-secret',
 
-  GOOGLE_ID:        'app-id',
-  GOOGLE_SECRET:    'secret',
+  GITHUB_ID:        'app-id',
+  GITHUB_SECRET:    'secret',
 
   // Control debug level for modules using visionmedia/debug
-  DEBUG: ''
+  DEBUG: '',
+
+  // Deploy
+  deploy: {
+    GITHUB_ID:        'app-id',
+    GITHUB_SECRET:    'secret',
+  }
 };
