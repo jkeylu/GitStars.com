@@ -43,10 +43,10 @@ exports.fetchStarred = function(page, accessToken, callback) {
         }
         pageCount = count;
       }
-      return callback(null, body, pageCount);
+      callback(null, body, pageCount);
     } else {
       err = new HttpError(resp.statusCode, body && body.message || body);
-      return callback(err);
+      callback(err);
     }
   });
 };
@@ -60,8 +60,8 @@ function getPageCount(link, rel) {
   return -1;
 }
 
-exports.star = function(owner, repo, accessToken, callback) {
-  var url = util.format('https://api.github.com/user/starred/%s/%s', owner, repo);
+exports.star = function(fullName, accessToken, callback) {
+  var url = util.format('https://api.github.com/user/starred/%s', fullName);
   var options = {
     headers: {
       'Authorization': 'Bearer ' + accessToken,
@@ -74,16 +74,16 @@ exports.star = function(owner, repo, accessToken, callback) {
     }
 
     if (resp.statusCode == 204) {
-      return callback(null);
+      callback(null);
     } else {
       err = new HttpError(resp.statusCode, body && body.message || body);
-      return callback(err);
+      callback(err);
     }
   });
 };
 
-exports.unstart = function(owner, repo, accessToken, callback) {
-  var url = util.format('https://api.github.com/user/starred/%s/%s', owner, repo);
+exports.unstar = function(fullName, accessToken, callback) {
+  var url = util.format('https://api.github.com/user/starred/%s', fullName);
   var options = {
     headers: { 'Authorization': 'Bearer ' + accessToken }
   };
@@ -93,10 +93,29 @@ exports.unstart = function(owner, repo, accessToken, callback) {
     }
 
     if (resp.statusCode == 204) {
-      return callback(null);
+      callback(null);
     } else {
       err = new HttpError(resp.statusCode, body && body.message || body);
+      callback(err);
+    }
+  });
+};
+
+exports.getRepo = function(fullName, accessToken, callback) {
+  var url = util.format('https://api.github.com/repos/%s', fullName);
+  var options = {
+    headers: { 'Authorization': 'Bearer ' + accessToken }
+  };
+  needle.get(url, options, function(err, resp, body) {
+    if (err) {
       return callback(err);
+    }
+
+    if (resp.statusCode == 200) {
+      callback(body);
+    } else {
+      err = new HttpError(resp.statusCode, body && body.message || body);
+      callback(err);
     }
   });
 };
@@ -114,10 +133,10 @@ exports.fetchReadme = function(fullName, accessToken, callback) {
     }
 
     if (resp.statusCode == 200) {
-      return callback(null, body);
+      callback(null, body);
     } else {
       err = new HttpError(resp.statusCode, body && body.message || body);
-      return callback(err);
+      callback(err);
     }
   });
 };
