@@ -9,8 +9,8 @@ module.exports = {
   DOMAIN: 'http://localhost:9000',
   SESSION_SECRET: "gitstars-secret",
 
-  GITHUB_ID: 'app-id',
-  GITHUB_SECRET: 'secret',
+  GITHUB_ID: 'be63fe752fb528d70cdd',
+  GITHUB_SECRET: '1d3acadf6159db7e0fba6d8c6f052f898c00b88b',
 
   // Control debug level for modules using visionmedia/debug
   DEBUG: '',
