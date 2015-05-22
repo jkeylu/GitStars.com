@@ -37,7 +37,8 @@
       port : "46800",
       ref  : "origin/dist",
       repo : "git@github.com:jkeylu/GitStars.com.git",
-      path : "/home/pm2/GitStars.com"
+      path : "/home/pm2/GitStars.com",
+      "post-deploy" : "echo skip post-deploy"
     }
   }
 }
