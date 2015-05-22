@@ -11,7 +11,7 @@
           i.fa.fa-star
           | Unstar
       .clone
-        | Clone:
+        label Clone
         input.form-control(type='text', ng-value='"https://github.com/" + activedRepo.full_name + ".git"', readonly)
       .tags
         ui-select(multiple, ng-model='activedRepo.objTags',

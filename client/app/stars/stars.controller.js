@@ -2,12 +2,6 @@ angular.module('gitStarsApp')
   .controller('StarsCtrl',
     ['$scope', 'Tag', 'Star', 'socket', '$http', '$timeout', '$location', 'Auth',
     function ($scope, Tag, Star, socket, $http, $timeout, $location, Auth) {
-      Auth.isLoggedInAsync(function(loggedIn) {
-        if (!loggedIn) {
-          $location.path('/login');
-        }
-      });
-
       // fetch all repos
       $scope.repos = [];
       function fetch(page) {
@@ -22,7 +16,6 @@ angular.module('gitStarsApp')
           }
         });
       }
-      fetch(1);
 
       // pull stars button
       $scope.pullState = 'Pull Stars';
@@ -41,17 +34,28 @@ angular.module('gitStarsApp')
         };
         Star.sync(done, done);
       };
-      $scope.pullStars();
 
 
-      // socket
-      socket.syncUpdates('star', $scope.repos);
-      $scope.$on('$destroy', function () {
-        socket.unsyncUpdates('star');
+      $scope.tags = [];
+
+      Auth.isLoggedInAsync(function(loggedIn) {
+        if (!loggedIn) {
+          $location.path('/login');
+          return;
+        }
+
+        $scope.pullStars();
+        fetch(1);
+
+        // socket
+        socket.syncUpdates('star', $scope.repos);
+        $scope.$on('$destroy', function () {
+          socket.unsyncUpdates('star');
+        });
+
+        // fetch all tags
+        $scope.tags = Tag.query();
       });
-
-      // fetch all tags
-      $scope.tags = Tag.query();
 
 
       // sidebar filter
