@@ -366,6 +366,7 @@ module.exports = function (grunt) {
           src: [
             'package.json',
             'ecosystem.json5',
+            'deploymodify.sh',
             'server/**/*'
           ]
         }]
@@ -567,7 +568,7 @@ module.exports = function (grunt) {
         command: '<%= shell.deploy.command %> setup'
       },
       modifyEcosystemFile: {
-        command: '<%= shell.deploy.command %> run sed -i "s/\\(GITHUB_ID\\): \\".*\\"/\\1: \\"<%= env.all.deploy.GITHUB_ID %>\\"/; s/\\(GITHUB_SECRET\\): \\".*\\"/\\1: \\"<%= env.all.deploy.GITHUB_SECRET %>\\"/" ecosystem.json5'
+        command: '<%= shell.deploy.command %> run ./deploymodify.sh <%= env.all.deploy.GITHUB_ID %> <%= env.all.deploy.GITHUB_SECRET %>'
       },
       installPackages: {
         command: '<%= shell.deploy.command %> run npm install'
