@@ -568,7 +568,7 @@ module.exports = function (grunt) {
         command: '<%= shell.deploy.command %> setup'
       },
       modifyEcosystemFile: {
-        command: '<%= shell.deploy.command %> run ./deploymodify.sh <%= env.all.deploy.GITHUB_ID %> <%= env.all.deploy.GITHUB_SECRET %>'
+        command: '<%= shell.deploy.command %> run chmod u+x deploymodify.sh && ./deploymodify.sh <%= env.all.deploy.GITHUB_ID %> <%= env.all.deploy.GITHUB_SECRET %>'
       },
       installPackages: {
         command: '<%= shell.deploy.command %> run npm install'
