@@ -568,7 +568,7 @@ module.exports = function (grunt) {
         command: '<%= shell.deploy.command %> setup'
       },
       chmodPostDeployFile: {
-        command: '<%= shell.deploy.command %> run chmod u+x post-deploy.sh'
+        command: 'chmod u+x <%= yeoman.dist %>/post-deploy.sh'
       },
       'post-deploy': {
         command: '<%= shell.deploy.command %> run ./post-deploy.sh <%= env.all.deploy.GITHUB_ID %> <%= env.all.deploy.GITHUB_SECRET %>'
@@ -684,6 +684,7 @@ module.exports = function (grunt) {
     'concat',
     'ngAnnotate',
     'copy:dist',
+    'shell:chmodPostDeployFile',
     'cssmin',
     'uglify',
     'rev',
@@ -701,7 +702,6 @@ module.exports = function (grunt) {
       'build',
       'buildcontrol:origin',
       'shell:deploy',
-      'shell:chmodPostDeployFile',
       'shell:post-deploy'
     ]);
   });
