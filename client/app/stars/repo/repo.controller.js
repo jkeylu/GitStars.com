@@ -1,5 +1,5 @@
 angular.module('gitStarsApp')
-  .controller('StarsRepoCtrl', function ($scope, $http, $location, $window) {
+  .controller('StarsRepoCtrl', function ($scope) {
     $scope.filterTag = function(tag) {
       $scope.filters.tags = [tag];
     };

@@ -1,5 +1,5 @@
 angular.module('gitStarsApp')
-  .controller('StarsSidebarCtrl', function ($scope, $http, $location, $window) {
+  .controller('StarsSidebarCtrl', function ($scope) {
     $scope.languages = [];
     $scope.refreshLanguages = function(text) {
       $scope.languages = [];
