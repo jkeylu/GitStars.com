@@ -5,7 +5,7 @@ angular.module('gitStarsApp')
       // fetch all repos
       $scope.repos = [];
       function fetch(page, callback) {
-        var error = done = function() {
+        var done = function() {
           callback && callback();
         };
         var success = function(repos) {
@@ -22,6 +22,7 @@ angular.module('gitStarsApp')
             done();
           }
         };
+        var error = done;
         Star.query({ page: page }, success, error);
       }
 
