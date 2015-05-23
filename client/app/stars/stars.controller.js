@@ -1,28 +1,40 @@
 angular.module('gitStarsApp')
   .controller('StarsCtrl',
-    ['$scope', 'Tag', 'Star', 'socket', '$http', '$timeout', '$location', 'Auth',
-    function ($scope, Tag, Star, socket, $http, $timeout, $location, Auth) {
+    ['$scope', 'Tag', 'Star', 'socket', '$http', '$timeout', '$interval', '$location', 'Auth',
+    function ($scope, Tag, Star, socket, $http, $timeout, $interval, $location, Auth) {
       // fetch all repos
       $scope.repos = [];
-      function fetch(page) {
-        Star.query({ page: page }, function(repos) {
+      function fetch(page, callback) {
+        var error = done = function() {
+          callback && callback();
+        };
+        var success = function(repos) {
           if (repos.length > 0) {
             if (repos.length == 100) {
-              fetch(++page);
+              fetch(++page, callback);
+            } else {
+              done();
             }
             for (var i = 0; i < repos.length; i++) {
               $scope.repos.push(repos[i]);
             }
+          } else {
+            done();
           }
-        });
+        };
+        Star.query({ page: page }, success, error);
       }
 
       // pull stars button
+      var defaultPullTooltip = 'Click to pull stars from Github';
       $scope.pullState = 'Pull Stars';
-      $scope.pullStars = function() {
-        var t1 = new Date();
+      $scope.pullTooltip = defaultPullTooltip;
+      $scope.pullBtnDisabled = false;
+      function pulling() {
         $scope.pullState = 'Pulling';
-        var done = function() {
+        var t1 = new Date();
+
+        return function() {
           var t2 = new Date();
           var delay = 1500 - (t2 - t1);
           if (delay < 0) {
@@ -32,7 +44,36 @@ angular.module('gitStarsApp')
             $scope.pullState = 'Pull Stars';
           }, delay);
         };
-        Star.sync(done, done);
+      }
+      $scope.pullStars = function() {
+        if ($scope.pullBtnDisabled) {
+          return;
+        }
+        $scope.pullBtnDisabled = true;
+        var done = pulling();
+
+        var success = function(data) {
+          if (data && data.waitting) {
+            var timesLeft = data.waitting;
+            var t = 0;
+            $interval(function() {
+              if ((--timesLeft) == 0) {
+               $scope. pullBtnDisabled = false;
+                $scope.pullTooltip = defaultPullTooltip;
+              } else {
+                $scope.pullTooltip = 'Left ' + timesLeft + 's';
+              }
+            }, 1000, data.waitting);
+          } else {
+            $scope.pullBtnDisabled = false;
+            $scope.pullTooltip = defaultPullTooltip;
+          }
+          done();
+        };
+        var error = function() {
+          done();
+        };
+        Star.sync(success, error);
       };
 
 
@@ -44,13 +85,15 @@ angular.module('gitStarsApp')
           return;
         }
 
-        $scope.pullStars();
-        fetch(1);
+        fetch(1, function() {
+          // socket
+          socket.syncUpdates('star', $scope.repos);
+          $scope.$on('$destroy', function () {
+            socket.unsyncUpdates('star');
+          });
 
-        // socket
-        socket.syncUpdates('star', $scope.repos);
-        $scope.$on('$destroy', function () {
-          socket.unsyncUpdates('star');
+          // pull stars from github
+          $scope.pullStars();
         });
 
         // fetch all tags

@@ -10,20 +10,22 @@ angular.module('gitStarsApp')
         }
 
         $scope.starringOrUnstarring = true;
+        var data;
         if (!activedRepo.gs_unstarred_at) {
           var arr = activedRepo.full_name.split('/');
-          var params = {
+          data = {
             owner: arr[0],
             repo: arr[1]
           };
-          Star.unstar(null, params, function() {
+          Star.unstar(null, data, function() {
             $scope.activedRepo = null;
             $scope.starringOrUnstarring = false;
           }, function() {
             $scope.starringOrUnstarring = false;
           });
         } else {
-          Star.star({ full_name: activedRepo.full_name }, function() {
+          data = { full_name: activedRepo.full_name };
+          Star.star(data, function() {
             activedRepo.gs_unstarred_at = null;
             $scope.starringOrUnstarring = false;
           }, function() {

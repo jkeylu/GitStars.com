@@ -8,7 +8,9 @@ var githubApi = require('../../components/github/api');
 exports.readme = function(req, res) {
   var fullName = req.params.owner + '/' + req.params.repo;
   var conditions = { full_name: fullName };
+
   async.waterfall([
+    // find in mongodb
     function(callback) {
       Repo.findOne(conditions, function(err, repo) {
         if (err) {
@@ -17,6 +19,7 @@ exports.readme = function(req, res) {
         if (!repo) {
           return callback(null,null);
         }
+        // readme will be cached one week in mongodb
         var oneWeek = 604800000; // 1000ms * 60 * 60 * 24 * 7
         var needRefresh = (new Date() - repo.gs_readme_updated_at) > oneWeek;
         if (needRefresh) {
@@ -25,6 +28,8 @@ exports.readme = function(req, res) {
         callback(null, repo.readme);
       })
     },
+
+    // fetch from github
     function(readme, callback) {
       if (readme) {
         return callback(null, readme);

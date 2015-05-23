@@ -4,7 +4,15 @@ angular.module('gitStarsApp')
   .factory('Star', ['$resource', function ($resource) {
     return $resource('/api/stars/:id/:controller/:tag', null, {
       sync: {
-        method: 'PUT'
+        method: 'PUT',
+        interceptor: {
+          response: function(response) {
+            if (response.status != 200) {
+              return { waitting: 180 };
+            }
+            return response.resource;
+          }
+        }
       },
       star: {
         method: 'POST'

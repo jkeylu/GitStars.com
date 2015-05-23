@@ -11,8 +11,10 @@ exports.index = function(req, res) {
     user_id: req.user.id
   };
   Tag.find(conditions, function(err, tags) {
-    if(err) return res.send(500, err);
-    res.json(200, tags);
+    if (err) {
+      return res.status(500).send(err);
+    }
+    res.status(200).json(tags);
   });
 };
 
