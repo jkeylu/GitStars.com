@@ -85,17 +85,23 @@ exports.destroy = function(req, res) {
   });
 };
 
+/**
+ * User should wait no more than 2 minutes to sync stars again
+ */
 exports.sync = function(req, res) {
   User.findOne({ id: req.user.id }, 'gs_synced_at', function(err, user) {
     if (!err && user && user.gs_synced_at) {
       var gone = Math.floor((new Date() - user.gs_synced_at) / 1000);
-      if (gone < 300) {
-        return res.status(304).send({ waitting: (300 - gone) });
+      var waitting = 120 - gone;
+      if (waitting > 0) {
+        return res.status(200).json({ waitting: waitting });
       }
     }
+
     if (starSync.isSyncing(req.user)) {
       return res.sendStatus(204);
     }
+
     starSync.sync(req.user, function(err) {
       if (err) {
         console.error(err);
