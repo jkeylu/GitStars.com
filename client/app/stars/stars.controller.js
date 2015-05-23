@@ -72,9 +72,13 @@ angular.module('gitStarsApp')
       $scope.filters = filters;
 
       $scope.filterBySearch = function(repo) {
-        return !filters.search
-          || repo.full_name.indexOf(filters.search) >= 0
-          || (repo.description && repo.description.indexOf(filters.search) >= 0);
+       if (!filters.search) return true;
+       var search = filters.search.toLowerCase()
+         , fullName = repo.full_name.toLowerCase()
+         , description = repo.description;
+       if (fullName.indexOf(search) >= 0) return true;
+       if (description && description.toLowerCase().indexOf(search) >= 0) return true;
+       return false;
       };
       $scope.filterByShow = function(repo) {
         var b = false;
