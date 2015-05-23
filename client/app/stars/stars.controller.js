@@ -66,7 +66,7 @@ angular.module('gitStarsApp')
         sortField: 'created_at',
         languages: [],
         tags: [],
-        sortReverse: false,
+        sortReverse: true, // DESC
         tagsFilterLogic: 'AND'
       };
       $scope.filters = filters;

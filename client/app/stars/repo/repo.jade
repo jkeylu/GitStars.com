@@ -16,5 +16,9 @@
           i.fa.fa-code-fork
           {{repo.forks_count}}
         .stat.link
-          i.fa.fa-link
-          a(ng-href='https://github.com/{{repo.full_name}}', target='_blank') View on github
+          span.homepage(ng-if='!!repo.homepage')
+            i.fa.fa-home
+            a(ng-href='{{repo.homepage}}', tooltip='{{repo.homepage}}', target='_blank') Homepage
+          span.github
+            i.fa.fa-github
+            a(ng-href='https://github.com/{{repo.full_name}}', target='_blank') Github

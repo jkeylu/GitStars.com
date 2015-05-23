@@ -45,6 +45,9 @@ angular.module('gitStarsApp')
         var params = { id: activedRepo.id };
         var tags = _.map(activedRepo.objTags, function(tag) { return tag.name; });
         Star.updateTags(params, tags);
+        if (_.findIndex($scope.tags, function(t) { return t.name == item.name; }) < 0) {
+          $scope.tags.push(item);
+        }
       };
       $scope.tagOnRemove = function(item, model) {
         var activedRepo = $scope.activedRepo;

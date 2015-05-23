@@ -1,17 +1,17 @@
 .stars .repo
   position absolute
   top 50px
-  bottom 0px
+  bottom 0
   left 200px
   width 400px
   overflow-y auto
 
   .list-group-item:first-child
-    border-top-left-radius 0px
-    border-top-right-radius 0px
+    border-top-left-radius 0
+    border-top-right-radius 0
   .list-group-item:last-child
-    border-bottom-left-radius 0px
-    border-bottom-right-radius 0px
+    border-bottom-left-radius 0
+    border-bottom-right-radius 0
 
   .list-group-item:focus,
   .list-group-item:hover
@@ -29,8 +29,8 @@
 
   .list-group-item
     cursor pointer
-    border-left-width 0px
-    border-right-width 0px
+    border-left-width 0
+    border-right-width 0
 
   .list-group-item-heading
     margin-bottom 10px
@@ -38,14 +38,14 @@
 
   .tags
     list-style-type none
-    margin 6px 0px 4px 0px
-    padding 0px
+    margin 6px 0 4px 0
+    padding 0
     .tag
       color #333
       display inline-block
       background #fff
       padding 3px 6px
-      margin 4px 4px 0px 0px
+      margin 4px 4px 0 0
       cursor pointer
       line-height 1
       font-size 10px
@@ -54,15 +54,19 @@
 
   .stats
     margin-top 10px
+    font-size 14px
     .stat
       display inline-block
       width 55px
-      padding 1px 0px
-      margin 0px 2px
+      padding 1px 0
+      margin 0 2px
       .fa
         margin-right 2px
     .stars
-      margin-left 0px
+      margin-left 0
     .link
       float right
-      width 110px
+      width 150px
+      text-align right
+      .github
+        padding-left 5px

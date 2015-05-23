@@ -45,6 +45,21 @@ angular.module('gitStarsApp', [
     };
   })
 
+  // fix tooltip not working in angular-bootstrap 0.11.*
+  // https://github.com/angular-ui/bootstrap/issues/2828#issuecomment-74919821
+  .directive('tooltip', function() {
+    return {
+      restrict: 'EA',
+      link: function(scope, element, attrs) {
+        attrs.tooltipPlacement = attrs.tooltipPlacement || 'top';
+        attrs.tooltipAnimation = attrs.tooltipAnimation || true;
+        attrs.tooltipPopupDelay = attrs.tooltipPopupDelay || 0;
+        attrs.tooltipTrigger = attrs.tooltipTrigger || 'mouseenter';
+        attrs.tooltipAppendToBody = attrs.tooltipAppendToBody || false;
+      }
+    };
+  })
+
   .run(function ($rootScope, $location, Auth) {
     // Redirect to login if route requires auth and you're not logged in
     $rootScope.$on('$stateChangeStart', function (event, next) {
