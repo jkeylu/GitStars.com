@@ -1,6 +1,6 @@
 {
   "name": "GitStars.com",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "main": "server/app.js",
   "dependencies": {
     "async": "^0.9.0",
@@ -92,5 +92,24 @@
     "test": "grunt test",
     "update-webdriver": "node node_modules/grunt-protractor-runner/node_modules/protractor/bin/webdriver-manager update"
   },
-  "private": true
+  "private": true,
+  "description": "Quick find and organize your GitHub stars more easily.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jkeylu/GitStars.com.git"
+  },
+  "keywords": [
+    "git",
+    "github",
+    "stars",
+    "tag",
+    "find",
+    "organize"
+  ],
+  "author": "jKey Lu <jkeylu@gmail.com> (https://github.com/jkeylu)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jkeylu/GitStars.com/issues"
+  },
+  "homepage": "https://github.com/jkeylu/GitStars.com"
 }

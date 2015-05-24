@@ -18,7 +18,8 @@ exports.index = function(req, res) {
   };
   var options = {
     skip: 0,
-    limit: 100
+    limit: 100,
+    sort: { created_at: -1 }
   };
   var page = ~~req.query.page;
   if (page < 1) {
