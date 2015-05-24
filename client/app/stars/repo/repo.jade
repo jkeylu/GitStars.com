@@ -1,6 +1,6 @@
 .repo(ng-controller='StarsRepoCtrl')
   .list-group
-    .list-group-item(ng-repeat='repo in repos | filter:filterBySearch | filter:filterByShow | filter:filterByLanguages | filter:filterByTags | orderBy:filters.sortField:filters.sortReverse', ng-click='activeRepo(repo)', ng-class='{ active: activedRepo.id == repo.id }')
+    .list-group-item(ng-repeat='repo in filtered.repos = (repos | filter:filterBySearch | filter:filterByShow | filter:filterByLanguages | filter:filterByTags | orderBy:filters.sortField:filters.sortReverse) track by repo.id', ng-click='activeRepo(repo)', ng-class='{ active: activedRepo.id == repo.id }')
       h4.list-group-item-heading {{repo.full_name}}
       p.list-group-item-text {{repo.description}}
       ul.tags

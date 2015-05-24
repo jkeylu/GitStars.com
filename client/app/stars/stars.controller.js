@@ -2,6 +2,7 @@ angular.module('gitStarsApp')
   .controller('StarsCtrl', function ($scope, Tag, Star, socket, $http, $timeout, $interval, $location, Auth) {
     // fetch all repos
     $scope.repos = [];
+    $scope.filtered = {};
     function fetch(page, callback) {
       var done = function() {
         callback && callback();

@@ -9,6 +9,8 @@
         input.form-control(ng-model='filters.search', type='text', placeholder='Enter something')
   .panel.panel-default
     .panel-heading Show
+      span.filtered-count
+        span(ng-bind='filtered.repos.length + "/" + repos.length')
     .panel-body
       .btn-group
         label.btn.btn-default(ng-model='filters.taggedState', btn-radio='"All"') All
